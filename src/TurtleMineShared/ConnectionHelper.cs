@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
@@ -20,7 +20,8 @@ namespace TurtleMine
 			{
 				prx = WebRequest.GetSystemWebProxy();
 			}
-			catch {} // If failed to get, simply return null.
+			catch
+			{} // If failed to get, simply return null.
 
 			return prx;
 		}
@@ -34,10 +35,10 @@ namespace TurtleMine
 		public static XmlReader CreateXmlReader(string url, IWebProxy defaultProxy)
 		{
 			//Default to use No proxy settings with Windows Authentication
-			IWebProxy prox = null;
-			var cred = CredentialCache.DefaultCredentials;
-			string certPath = null;
-			
+			IWebProxy prox     = null;
+			var       cred     = CredentialCache.DefaultNetworkCredentials;
+			string    certPath = null;
+
 			//Check settings Manager for values
 			SettingsManager.LoadSettings();
 			if (SettingsManager.Settings.Connectivity != null)
@@ -51,12 +52,12 @@ namespace TurtleMine
 							prox = defaultProxy;
 							break;
 						case ProxyType.ManualProxy:
-							var manproxy = (ManualProxy) SettingsManager.Settings.Connectivity.Proxy.Item;
+							var manproxy = (ManualProxy)SettingsManager.Settings.Connectivity.Proxy.Item;
 							prox = new WebProxy
-									   {
-										   Address = new Uri(manproxy.Address + ":" + manproxy.Port),
-										   BypassProxyOnLocal = manproxy.BypassLocal
-									   };
+										 {
+											 Address            = new Uri(manproxy.Address + ":" + manproxy.Port),
+											 BypassProxyOnLocal = manproxy.BypassLocal
+										 };
 							break;
 					}
 				}
@@ -64,7 +65,7 @@ namespace TurtleMine
 				//Auth
 				if (SettingsManager.Settings.Connectivity.Authentication.Item != null && !(SettingsManager.Settings.Connectivity.Authentication.Item is bool))
 				{
-					var credentials = (ProvidedCredentials) SettingsManager.Settings.Connectivity.Authentication.Item;
+					var credentials = (ProvidedCredentials)SettingsManager.Settings.Connectivity.Authentication.Item;
 					cred = new NetworkCredential(credentials.Username, credentials.Password);
 				}
 
@@ -76,12 +77,15 @@ namespace TurtleMine
 				//SSL
 				certPath = SettingsManager.Settings.Connectivity.SSLCertPath;
 			}
-			
+
 			//Also pass credentials to web client so it can authenticate against servers that do not allow anonymous connections
 			var client = new CertWebClient { Proxy = prox, Credentials = cred, CertPath = certPath };
 
 			//Provide support for SSL by accepting all certificates
-			ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };  
+			ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
+
+			// CA5364: Do not use deprecated security protocols 
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
 
 			//Read the url
 			if (url != null)
@@ -94,6 +98,7 @@ namespace TurtleMine
 					return reader;
 				}
 			}
+
 			return null;
 		}
 	}
@@ -137,6 +142,5 @@ namespace TurtleMine
 
 			return webrequest;
 		}
-}
-
+	}
 }
