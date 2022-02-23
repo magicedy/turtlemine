@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?include Product.config.wxi?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+        <Property Id="Common" Value="Common.wxs" />
+
+        <CustomActionRef Id="WixExitEarlyWithSuccess" />
+
+        <Icon Id="icon.ico" SourceFile="$(var.SetupIcon)" />
+        <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+        <Property Id="ARPHELPLINK" Value="https://github.com/jlestein/turtlemine" />
+        <Property Id="ARPCONTACT" Value="Maintainer" />
+	</Fragment>
+</Wix>

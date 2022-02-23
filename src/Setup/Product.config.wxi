@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+    <?define UpgradeCode = "{44742092-67EA-4A4A-8662-789B01AB45C2}" ?>
+
+    <?define ProductCode = "*" ?>
+
+    <?define ProductName =  "TurtleMine" ?>
+    
+    <?define SetupIcon="Resources\TRMLogo.ico"?>
+
+    <!-- Platform specific variables -->
+    <?if $(var.Platform) = x64 ?>
+        <?define Win64 = "yes" ?>
+        <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+    <?else ?>
+        <?define Win64 = "no" ?>
+        <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+    <?endif ?>
+
+    <?define ProductManufacturer = "TurtleMine"?>
+
+    <?define ProductManufacturerInstallRoot = "Schleupen"?>
+    <?define ProductManufacturerInstallNameKey = "Schleupen"?>
+    <?define ProductManufacturerWebInstallRoot = "Schleupen"?>
+
+    <!--
+	 The minimum version of the Windows Installer required to install the package.
+	 Take the major version of the required Windows Installer and multiply by a 100
+	 then add the minor version of the Windows Installer. 
+	 
+	 Version information about Windows Installer can be found here:
+	 http://msdn.microsoft.com/en-us/library/aa371185(VS.85).aspx
+	 
+	 For 64-bit Windows Installer packages, this property has to be set at minumum to 200 
+	 as Windows Installer 2.0 was the first version to support 64-bit packages.
+	 -->
+    <?define InstallerVersion = "500"?>
+</Include>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?include Product.config.wxi?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+        <FeatureGroup Id="TurtleMine">
+            <FeatureRef Id="TurtleMine" />
+        </FeatureGroup>
+
+        <Feature Id="TurtleMine" Title="$(var.ProductName)" Level="1" InstallDefault="local" TypicalDefault="install">
+            <ComponentGroupRef Id="TurtleMine"/>
+        </Feature>
+	</Fragment>
+</Wix>

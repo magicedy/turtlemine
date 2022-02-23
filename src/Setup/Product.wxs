@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?include Product.config.wxi?>
+
+<?define UseVersionFromFileId = "TurtleMine.dll"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="$(var.ProductCode)" 
+             UpgradeCode="$(var.UpgradeCode)"
+             Name="$(var.ProductName)" 
+             Language="1033" 
+             Version="!(bind.fileVersion.$(var.UseVersionFromFileId))" 
+             Manufacturer="$(var.ProductManufacturer)" >
+
+        <Package InstallerVersion="$(var.InstallerVersion)" 
+                 Manufacturer="$(var.ProductManufacturer)"
+                 InstallPrivileges="elevated"
+                 Compressed="yes" 
+                 InstallScope="perMachine"
+                 Platform="$(var.Platform)"/>
+
+        <MajorUpgrade AllowDowngrades="no"
+                      AllowSameVersionUpgrades="no"
+                      DowngradeErrorMessage="A newer version of [ProductName] is already installed."
+                      MigrateFeatures="yes" />
+
+        <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+        <PropertyRef Id="Common" />
+
+        <WixVariable Id="WixUIBannerBmp" Value="Resources\BannerBitmap.jpg" />
+        <!-- <WixVariable Id="WixUIDialogBmp" Value="Resources\BannerBitmap.jpg" /> -->
+        <WixVariable Id="WixUILicenseRtf" Value="Resources\licence.rtf" />
+
+        <UI Id="UIElements">
+            <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+
+            <UIRef Id="WixUI_InstallDir" />
+            <UIRef Id="WixUI_ErrorProgressText" />
+        </UI>
+
+        <FeatureGroupRef Id="TurtleMine"/>
+    </Product>
+</Wix>
