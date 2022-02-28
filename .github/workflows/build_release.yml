@@ -1,0 +1,66 @@
+name: Build release
+
+on:
+  push:
+    tags: 
+      - 'Release_[1-9]+.[0-9]+.[0-9]+.[0-9]+'
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [Release]
+
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: src\TurtleMine.sln
+      
+    steps:
+    - name: Get tag name
+      id: tagname
+      uses: olegtarasov/get-tag@v2.1.1
+      with:
+          tagRegex: "(?<package>.*)_(?<version>.*)" 
+      
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Retrieve SNK
+      uses: timheuer/base64-to-file@v1.1
+      with:
+        fileName: 'turtlemine.snk'
+        fileDir: './src'
+        encodedString: ${{ secrets.TURTLEMINE_KEY }}
+
+    - name: Setup NuGet.exe for use with actions
+      uses: NuGet/setup-nuget@v1.0.5
+      
+    - run: nuget restore $env:Solution_Name
+
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v1.1
+     
+    - name: Build
+      run: msbuild $env:Solution_Name /t:Rebuild /p:Configuration=$env:Configuration /verbosity:diag
+      env:
+        Configuration: ${{ matrix.configuration }}
+
+    - name: Upload MSI
+      uses: actions/upload-artifact@v2
+      with:
+        name: Binaries
+        path: src/bin/Release/TurtleMine*.msi
+        
+    - name: Upload dll
+      uses: actions/upload-artifact@v2
+      with:
+        name: MSI Packages
+        path: src/bin/Release/TurtleMine*.dll
+
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        name: ${{ steps.tagName.outputs.version }}
+        bodyFile: changelog.md
+        artifacts: "src/bin/Release/*.msi"
+        token: ${{ secrets.GITHUB_TOKEN }}
