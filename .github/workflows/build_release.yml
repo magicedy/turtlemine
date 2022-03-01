@@ -35,7 +35,7 @@ jobs:
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v1.0.5
       
-    - name: restore packages for ${{ env:Solution_Name }}
+    - name: restore packages
       run: nuget restore $env:Solution_Name
 
     - name: setup-msbuild
