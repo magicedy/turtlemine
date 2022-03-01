@@ -30,7 +30,7 @@ jobs:
       with:
         fileName: 'turtlemine.snk'
         fileDir: './src'
-        encodedString: ${{ secrets.TURTLEMINE_KEY }}
+        encodedString: ${{ secrets.TURTLEMINE_SNK }}
 
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v1.0.5
