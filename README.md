@@ -17,8 +17,8 @@ Additional features can be found in some of the sites wiki pages (see the wiki f
 
 | Product | Version | Release Date | 
 | :-------- | :-------- | :------------- |
-| TurtleMine | 2.1.0.0 - 32bit | March 1 2022 |
-| TurtleMine | 2.1.0.0 - 64bit | March 1 2022 |
+| TurtleMine | 2.1.1 - 32bit | April 24 2024 |
+| TurtleMine | 2.1.1 - 64bit | April 24 2024 |
 
 # Prerequisites
 
