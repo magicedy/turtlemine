@@ -1,0 +1,38 @@
+name: Build release
+
+on: push
+jobs:
+  build:
+    strategy:
+      matrix:
+        configuration: [Release]
+
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: src\TurtleMine.sln
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.1.3
+
+    - name: Retrieve SNK
+      uses: timheuer/base64-to-file@v1.2.4
+      with:
+        fileName: 'turtlemine.snk'
+        fileDir: './src'
+        encodedString: ${{ secrets.TURTLEMINE_SNK }}
+
+    - name: Setup NuGet.exe for use with actions
+      uses: NuGet/setup-nuget@v2.0.0
+      
+    - name: restore packages
+      run: nuget restore $env:Solution_Name
+
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v2
+     
+    - name: Build
+      run: msbuild $env:Solution_Name /t:Clean,Rebuild /p:Configuration=$env:Configuration /verbosity:diag
+      env:
+        Configuration: ${{ matrix.configuration }}
