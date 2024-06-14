@@ -21,7 +21,7 @@ jobs:
       with:
         fileName: 'turtlemine.snk'
         fileDir: './src'
-        encodedString: ${{ secrets.TURTLEMINE_SNK }}
+        encodedString: ${{ steps.write_file.outputs.filePath }}
 
     - name: Setup NuGet.exe for use with actions
       uses: NuGet/setup-nuget@v2.0.0
