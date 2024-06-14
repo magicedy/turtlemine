@@ -367,7 +367,7 @@ namespace TurtleMine.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to redmine.
+        ///   Looks up a localized string similar to Issue.
         /// </summary>
         internal static string IssueText {
             get {
