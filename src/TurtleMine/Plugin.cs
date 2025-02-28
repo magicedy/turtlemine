@@ -147,7 +147,7 @@ namespace TurtleMine
                         //Add each checked issue
                         foreach (var item in form.ItemsFixed)
                         {
-                            result.AppendLine(string.Format("({0} #{1}) : {2}", Strings.IssueText, item.Number,
+                            result.AppendLine(string.Format("{2}({0}#{1})", Strings.IssueText, item.Number,
                                                 item.Description));
                         }
                     }
@@ -161,13 +161,13 @@ namespace TurtleMine
                         else
                         {
                             //Add "Issues"
-                            result.AppendFormat("({0}", Strings.IssueText);
+                            result.AppendFormat("(");
                         }
 
                         //Add each checked issue
                         foreach (var item in form.ItemsFixed)
                         {
-                            result.AppendFormat(" #{0},", item.Number);
+                            result.AppendFormat("{0}#{1},", Strings.IssueText, item.Number);
                         }
                         //Remove trailing comma
                         result.Remove(result.Length - 1, 1);
