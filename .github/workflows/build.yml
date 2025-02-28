@@ -2,8 +2,6 @@ name: Build
 
 on:
   push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
@@ -41,3 +39,9 @@ jobs:
       run: msbuild $env:Solution_Name /t:Clean,Rebuild /p:Configuration=$env:Configuration /verbosity:diag
       env:
         Configuration: ${{ matrix.configuration }}
+
+    - name: Upload MSI
+      uses: actions/upload-artifact@v4
+      with:
+        name: Binaries
+        path: src/bin/Release/TurtleMine_*bit.msi

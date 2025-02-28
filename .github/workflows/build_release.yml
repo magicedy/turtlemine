@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'Release_[1-9]+.[0-9]+.[0-9]+.[0-9]+'
+
 jobs:
   build:
     strategy:
@@ -47,19 +48,19 @@ jobs:
           Configuration: ${{ matrix.configuration }}
 
       - name: Upload MSI
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Binaries
           path: src/bin/Release/TurtleMine_*bit.msi
 
       - name: Upload dll
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: MSI Packages
           path: src/bin/Release/TurtleMine*.dll
 
       - name: Upload dll
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: executeable
           path: src/bin/Release/TurtleMine*.exe
@@ -68,6 +69,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           name: ${{ steps.tagName.outputs.version }}
-          bodyFile: changelog.md
           artifacts: "src/bin/Release/TurtleMine_*bit.msi"
           token: ${{ secrets.GITHUB_TOKEN }}
