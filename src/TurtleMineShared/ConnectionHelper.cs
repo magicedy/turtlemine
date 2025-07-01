@@ -84,11 +84,26 @@ namespace TurtleMine
 			//Provide support for SSL by accepting all certificates
 			ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
 
-			// Support for multiple security protocols including legacy ones for backward compatibility
-			// Note: Lower protocols like SSL3, TLS, TLS11 have security vulnerabilities and should be used with caution
-			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | 
-													SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | 
-													SecurityProtocolType.Tls13;
+			// 设置安全协议，优先使用更安全的版本
+			try
+			{
+				// 尝试使用最新的TLS协议版本
+				ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+				
+				// 如果运行环境支持TLS 1.3，则添加支持
+				if (Enum.IsDefined(typeof(SecurityProtocolType), "Tls13"))
+				{
+					ServicePointManager.SecurityProtocol |= (SecurityProtocolType)12288; // TLS 1.3
+				}
+				
+				// 如果需要向后兼容较旧的服务器，可以添加TLS 1.1（不推荐）
+				// ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls11;
+			}
+			catch (NotSupportedException)
+			{
+				// 如果当前环境不支持TLS 1.2，回退到系统默认值
+				ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072; // SystemDefault
+			}
 
 			//Read the url
 			if (url != null)
