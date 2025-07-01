@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Interop.BugTraqProvider;
 using TurtleMine.Resources;
+using TurtleMineShared.Utils;
 
 namespace TurtleMine
 {
@@ -130,123 +131,24 @@ namespace TurtleMine
 
                 //Add issues to comment window
                 var result = new StringBuilder();
-                var regexObj = new Regex(@"([Ii]ssues?:?(\s*(,|and)?\s*#\d+)+)", RegexOptions.IgnoreCase);
+                var staffName = ConfigHelper.GetStaffName();
 
-                if (regexObj.Matches(originalMessage).Count <= 0)
+                // 添加原始消息
+                if (originalMessage.Length > 0)
                 {
-                    //Not found at all
-
-                    //Check if we include summary
-                    if (form.IncludeSummary)
-                    {
-                        if (originalMessage.Length > 0)
-                        {
-                            result.AppendLine(originalMessage);
-                        }
-
-                        //Add each checked issue
-                        foreach (var item in form.ItemsFixed)
-                        {
-                            result.AppendLine(string.Format("({0} #{1}) : {2}", Strings.IssueText, item.Number,
-                                                item.Description));
-                        }
-                    }
-                    else
-                    {
-                        if (originalMessage.Length > 0)
-                        {
-                            //Add Original message and "Issues"
-                            result.AppendFormat("{0} ({1}", originalMessage, Strings.IssueText);
-                        }
-                        else
-                        {
-                            //Add "Issues"
-                            result.AppendFormat("({0}", Strings.IssueText);
-                        }
-
-                        //Add each checked issue
-                        foreach (var item in form.ItemsFixed)
-                        {
-                            result.AppendFormat(" #{0},", item.Number);
-                        }
-                        //Remove trailing comma
-                        result.Remove(result.Length - 1, 1);
-                        result.Append(")");
-                    }
-                }
-                else
-                {
-                    //Found
-
-                    if (originalMessage.EndsWith(Environment.NewLine))
-                    {
-                        result.Append(originalMessage);
-                    }
-                    else
-                    {
-                        result.AppendLine(originalMessage);    
-                    }
-
-                    //Add each checked issue if not already there
-                    foreach (var item in form.ItemsFixed)
-                    {
-                        if (form.IncludeSummary)
-                        {
-                            if (originalMessage.Contains(string.Format("({0} #{1}) : {2}", Strings.IssueText, item.Number,
-                                                item.Description)))
-                            {
-                                //Number and summary are already included so skip this issue number
-                                continue;
-                            }
-                            
-                            if (originalMessage.Contains(string.Format("#{0}", item.Number)))
-                            {
-                                //Issue number is included but not description so add the description on a new line if it is
-                                //not in the original comment somewhere else.
-                                if (!originalMessage.Contains(item.Description))
-                                {
-                                    result.AppendLine(item.Description);    
-                                }
-                                
-                                continue;
-                            }
-
-                            //Got here which means this is a new issue so add it.
-                            result.AppendLine(string.Format("({0} #{1}) : {2}", Strings.IssueText, item.Number,
-                                                item.Description));
-                        }
-                        else
-                        {
-                            if (originalMessage.Contains(string.Format("#{0}", item.Number)))
-                            {
-                                //Issue is already in the original comment so skip adding
-                                continue;
-                            }
-
-                            //Got here which means this is a new issue so add it to the existing list.
-                            //Find (Issues #xxx in original message and append to it.
-                            var startpos =
-                                originalMessage.LastIndexOf(
-                                    string.Format("{0} #", Strings.IssueText),
-                                    StringComparison.CurrentCultureIgnoreCase);
-                            var endpos = originalMessage.IndexOf(")", startpos);
-
-                            //If can't find closing brace then add after the word issue and before the #
-                            if (endpos < 0)
-                            {
-                                endpos = startpos + Strings.IssueText.Length;
-                                result.Insert(endpos, string.Format(" #{0},", item.Number));
-                            }
-                            else
-                            {
-                                result.Insert(endpos, string.Format(", #{0}", item.Number));
-                            }
-                        }
-                    }
+                    result.AppendLine(originalMessage);
                 }
 
-                //If we have issues added to the list return them  otherwise return just the original message (This is if all selected issues were already in the list).
-                return result.ToString() != originalMessage + " ()" ? result.ToString() : originalMessage;
+                // 为每个选中的问题添加新格式的信息
+                foreach (var item in form.ItemsFixed)
+                {
+                    result.AppendLine($"@redmine单号:#{item.Number}");
+                    result.AppendLine($"@提交者:{staffName}");
+                    result.AppendLine($"@提交说明: {item.Description}");
+                    // result.AppendLine(); // 添加空行分隔
+                }
+
+                return result.ToString();
             }
             catch (Exception ex)
             {

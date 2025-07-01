@@ -21,6 +21,9 @@ namespace TurtleMine
 		private IEnumerable<FeedItem> feedItems;
 		private readonly List<FeedItem> itemsAffected = new List<FeedItem>();
 		private readonly List<FeedItem> itemsList = new List<FeedItem>();
+		
+		// 存储所有原始FeedItem数据，用于搜索过滤
+		private readonly List<FeedItem> allFeedItems = new List<FeedItem>();
 
 		//Color of list items
 		private readonly Color colorSuccess = Color.LightSkyBlue;
@@ -244,6 +247,10 @@ namespace TurtleMine
 			//Get Feed Items
 			feedItems = _servicePlugin.FeedItems;
 			
+			//Clear previous items
+			lvwIssueList.Items.Clear();
+			allFeedItems.Clear();
+			
 			//Add Items to ListView
 			foreach (var item in feedItems)
 			{
@@ -256,6 +263,8 @@ namespace TurtleMine
 				lvi.SubItems.Add(item.LastUpdated.ToString());
 				lvi.Tag = item;
 
+				// 同时保存到原始列表和当前显示列表
+				allFeedItems.Add(item);
 				lvwIssueList.Items.Add(lvi);
 			}
 
@@ -271,7 +280,7 @@ namespace TurtleMine
 			}
 
 			//Re-higlight the last selected items
-			restoreRecentItems();
+			//restoreRecentItems();
 
 			//Restore Sorting and Column order / display
 			loadListViewSettings();
@@ -446,8 +455,11 @@ namespace TurtleMine
 		{
 			if (String.IsNullOrEmpty(txtSearch.Text))
 			{
-				gbxSearch.Text = Strings.SearchBoxNoResults;
-				restoreRecentItems();
+				// 搜索文本为空时，显示所有项目
+				var nbTotal = findIssue("", colorNeutral, colorNeutral, false);
+				gbxSearch.Text = String.Format(Strings.SearchBoxWithResults, nbTotal);
+				// 然后恢复最近项目的高亮
+				//restoreRecentItems();
 			}
 			else
 			{
@@ -531,12 +543,12 @@ namespace TurtleMine
 		}
 
 		/// <summary>
-		/// Function list colorization based on a criterion on the text
+		/// Function to filter the ListView based on search text
 		/// </summary>
 		/// <param name="text">search text</param>
-		/// <param name="successColor">Color lines with the text in the description</param>
-		/// <param name="failColor">Color lines not having the text in the description</param>
-		/// <param name="onlyMatch">If <c>true</c>, only the lines "Winning" is modified</param>
+		/// <param name="successColor">Color for matched items</param>
+		/// <param name="failColor">Color for non-matched items (not used in filtering)</param>
+		/// <param name="onlyMatch">If <c>true</c>, only matched items are affected</param>
 		/// <returns>Number of results</returns>
 		private int findIssue(string text, Color successColor, Color failColor, bool onlyMatch)
 		{
@@ -544,42 +556,86 @@ namespace TurtleMine
 			var textNoCase = standardizedText(text);
 			var nbVal = 0;
 
-			foreach (ListViewItem item in lvwIssueList.Items)
+			// 暂停列表更新以提升性能
+			lvwIssueList.BeginUpdate();
+			
+			// 清空当前显示的项目
+			lvwIssueList.Items.Clear();
+
+			// 遍历所有原始FeedItem数据
+			foreach (var feedItem in allFeedItems)
 			{
+				bool isMatch = false;
+				
 				if (textNoCase != string.Empty)
 				{
-					for (var i = 0; i < item.SubItems.Count; i++)
+					// 有搜索条件时检查匹配
+					// 创建临时的字符串数组来搜索
+					var searchFields = new[]
+					{
+						string.Empty,  // 第一列是空的
+						feedItem.Number.ToString(),
+						feedItem.Type,
+						feedItem.Description,
+						feedItem.Status,
+						feedItem.Author,
+						feedItem.LastUpdated.ToString()
+					};
+					
+					for (var i = 0; i < searchFields.Length; i++)
 					{
 						//Don't search hidden columns
-						if (lvwIssueList.Columns[i].Tag != null && lvwIssueList.Columns[i].Tag.ToString() == HiddenTag)
+						if (i < lvwIssueList.Columns.Count && 
+							lvwIssueList.Columns[i].Tag != null && 
+							lvwIssueList.Columns[i].Tag.ToString() == HiddenTag)
 						{
 							continue;
 						}
 
 						//Only search this field if "All fields" selected or it is the selected field
-						if (cboFields.SelectedItem != null && cboFields.SelectedItem.ToString() != Strings.SearchFieldAllFields && cboFields.SelectedItem.ToString() != lvwIssueList.Columns[i].Text)
+						if (i < lvwIssueList.Columns.Count &&
+							cboFields.SelectedItem != null && 
+							cboFields.SelectedItem.ToString() != Strings.SearchFieldAllFields && 
+							cboFields.SelectedItem.ToString() != lvwIssueList.Columns[i].Text)
 						{
 							continue;
 						}
 
-						if (item.SubItems[i].Text.ToLower().IndexOf(textNoCase) >= 0)
+						if (searchFields[i].ToLower().IndexOf(textNoCase) >= 0)
 						{
-							nbVal++;
-							item.BackColor = successColor;
+							isMatch = true;
 							break;
-						}
-
-						if (!onlyMatch)
-						{
-							item.BackColor = failColor;
 						}
 					}
 				}
 				else
 				{
-					item.BackColor = colorNeutral;
+					// 如果搜索文本为空，显示所有项目
+					isMatch = true;
+				}
+
+				// 只添加匹配的项目到显示列表
+				if (isMatch)
+				{
+					nbVal++;
+					
+					// 重新创建ListViewItem
+					var lvi = new ListViewItem {Text = string.Empty};
+					lvi.SubItems.Add(feedItem.Number.ToString());
+					lvi.SubItems.Add(feedItem.Type);
+					lvi.SubItems.Add(feedItem.Description);
+					lvi.SubItems.Add(feedItem.Status);
+					lvi.SubItems.Add(feedItem.Author);
+					lvi.SubItems.Add(feedItem.LastUpdated.ToString());
+					lvi.Tag = feedItem;
+					lvi.BackColor = onlyMatch ? successColor : colorNeutral;
+					
+					lvwIssueList.Items.Add(lvi);
 				}
 			}
+
+			// 恢复列表更新
+			lvwIssueList.EndUpdate();
 
 			return nbVal;
 		}

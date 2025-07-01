@@ -435,3 +435,8 @@ API
 Training
 Blog
 About
+
+
+.idea/
+.vscode/
+src/turtlemine.snk

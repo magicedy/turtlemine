@@ -380,9 +380,11 @@
             this.Controls.Add(this.gbxSearch);
             this.HelpButton = true;
             this.Icon = global::TurtleMine.Resources.Images.TRMLogo;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            this.MaximizeBox = true;
+            this.MinimizeBox = true;
             this.Name = "IssuesForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.WindowState = System.Windows.Forms.FormWindowState.Normal;
             this.helpProviderToolTip.SetShowHelp(this, ((bool)(resources.GetObject("$this.ShowHelp"))));
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.myIssuesForm_FormClosing);
             this.Load += new System.EventHandler(this.myIssuesForm_Load);

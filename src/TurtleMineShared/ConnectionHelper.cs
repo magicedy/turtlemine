@@ -84,8 +84,11 @@ namespace TurtleMine
 			//Provide support for SSL by accepting all certificates
 			ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
 
-			// CA5364: Do not use deprecated security protocols 
-			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
+			// Support for multiple security protocols including legacy ones for backward compatibility
+			// Note: Lower protocols like SSL3, TLS, TLS11 have security vulnerabilities and should be used with caution
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | 
+													SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | 
+													SecurityProtocolType.Tls13;
 
 			//Read the url
 			if (url != null)

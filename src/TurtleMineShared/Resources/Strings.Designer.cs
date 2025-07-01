@@ -124,6 +124,15 @@ namespace TurtleMine.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assigned To.
+        /// </summary>
+        internal static string ColumnAssignedTo {
+            get {
+                return ResourceManager.GetString("ColumnAssignedTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last Updated.
         /// </summary>
         internal static string ColumnLastUpdated {
@@ -516,6 +525,33 @@ namespace TurtleMine.Resources {
         internal static string VersionLabel {
             get {
                 return ResourceManager.GetString("VersionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @redmine issue:#{0}.
+        /// </summary>
+        internal static string CommitRedmineIssue {
+            get {
+                return ResourceManager.GetString("CommitRedmineIssue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @submitter:{0}.
+        /// </summary>
+        internal static string CommitSubmitter {
+            get {
+                return ResourceManager.GetString("CommitSubmitter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @description: {0}.
+        /// </summary>
+        internal static string CommitDescription {
+            get {
+                return ResourceManager.GetString("CommitDescription", resourceCulture);
             }
         }
     }

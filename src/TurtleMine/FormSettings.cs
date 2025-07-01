@@ -190,6 +190,8 @@ namespace TurtleMine
             //Make sure we got a valid key
             if (myReg == null)
             {
+                // 设置默认值，includeSummary默认为true
+                IncludeSummary = true;
                 return;
             }
 
@@ -211,11 +213,15 @@ namespace TurtleMine
                 DescriptionHeight = (int) descriptionHeight;
             }
 
-            //Include summary in comment flag
+            //Include summary in comment flag - 默认为true
             var includeSummary = myReg.GetValue(KeyIncludeSummary);
             if (includeSummary != null)
             {
                 IncludeSummary = bool.Parse(includeSummary.ToString());
+            }
+            else
+            {
+                IncludeSummary = true; // 默认勾选
             }
         }
 

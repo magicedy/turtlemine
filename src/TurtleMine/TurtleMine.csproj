@@ -128,6 +128,9 @@
     <Compile Include="..\TurtleMineShared\Settings\WordList.cs">
       <Link>Settings\WordList.cs</Link>
     </Compile>
+    <Compile Include="..\TurtleMineShared\Utils\ConfigHelper.cs">
+      <Link>Utils\ConfigHelper.cs</Link>
+    </Compile>
     <Compile Include="ColumnChooser.cs">
       <SubType>Form</SubType>
     </Compile>

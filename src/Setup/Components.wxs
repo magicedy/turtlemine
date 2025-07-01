@@ -10,10 +10,10 @@
         <Component Id="TurtleMine" Guid="{F4E9238F-8D3C-49B8-ADD8-214624199F63}" Directory="INSTALLLOCATION">
             <File Id="TurtleMine.dll" Source="$(var.TurtleMine.TargetPath)" Vital="yes" KeyPath="yes" />
 
-            <Class Id="{55B7DC40-2D4A-46AB-8884-329A02D26EDF}" 
-                   Context="InprocServer32" 
+            <Class Id="{55B7DC40-2D4A-46AB-8884-329A02D26EDF}"
+                   Context="InprocServer32"
                    Description="TurtleMine.Plugin"
-                   ThreadingModel="both" 
+                   ThreadingModel="both"
                    ForeignServer="mscoree.dll">
                 <ProgId Id="TurtleMine" Description="TurtleMine.Plugin" />
             </Class>
@@ -21,32 +21,36 @@
             <RegistryValue Root="HKCR"
                            Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\Implemented Categories\{62C8FE65-4EBB-45e7-B440-6E39B2CDBF29}"
                            Value="" Type="string" Action="write" />
-            
+
+            <RegistryValue Root="HKCR"
+                           Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\Implemented Categories\{3494FA92-B139-4730-9591-01135D5E7831}"
+                           Value="" Type="string" Action="write" />
+
             <RegistryValue Root="HKCR" Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\InprocServer32\[ProductVersion]"
                            Name="Class" Value="TurtleMine.Plugin" Type="string" Action="write" />
-            
+
             <RegistryValue Root="HKCR" Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\InprocServer32\[ProductVersion]"
                            Name="Assembly"
-                           Value="TurtleMine, Version=[ProductVersion], Culture=neutral, PublicKeyToken=cad5c752db7f2811"
+                           Value="TurtleMine, Version=[ProductVersion], Culture=neutral, PublicKeyToken=fc308a7ee965bebf"
                            Type="string" Action="write" />
-            
+
             <RegistryValue Root="HKCR" Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\InprocServer32\[ProductVersion]"
                            Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-            
+
             <RegistryValue Root="HKCR" Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\InprocServer32\[ProductVersion]"
                            Name="CodeBase" Value="file:///[#TurtleMine.dll]" Type="string" Action="write" />
-            
+
             <RegistryValue Root="HKCR" Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\InprocServer32" Name="Class"
                            Value="TurtleMine.Plugin" Type="string" Action="write" />
-            
+
             <RegistryValue Root="HKCR" Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\InprocServer32"
                            Name="Assembly"
-                           Value="TurtleMine, Version=[ProductVersion], Culture=neutral, PublicKeyToken=cad5c752db7f2811"
+                           Value="TurtleMine, Version=[ProductVersion], Culture=neutral, PublicKeyToken=fc308a7ee965bebf"
                            Type="string" Action="write" />
-            
+
             <RegistryValue Root="HKCR" Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\InprocServer32"
                            Name="RuntimeVersion" Value="v4.0.30319" Type="string" Action="write" />
-            
+
             <RegistryValue Root="HKCR" Key="CLSID\{55B7DC40-2D4A-46AB-8884-329A02D26EDF}\InprocServer32"
                            Name="CodeBase" Value="file:///[#TurtleMine.dll]" Type="string" Action="write" />
         </Component>

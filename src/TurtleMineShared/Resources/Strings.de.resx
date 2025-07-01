@@ -170,7 +170,7 @@
 		<comment>The title of the message to display when an error occurs retrieving the issues list</comment>
 	</data>
 	<data name="IssueText" xml:space="preserve">
-		<value>Issue</value>
+		<value>redmine</value>
 		<comment>The text to apear in commit messages listing the issue numbers (Word List Item)</comment>
 	</data>
 	<data name="FeedParser_feedUrl_is_not_provided" xml:space="preserve">

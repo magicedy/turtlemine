@@ -1,6 +1,9 @@
 name: Build
 
-on: push
+on:
+  push:
+  workflow_dispatch:
+
 jobs:
   build:
     strategy:
@@ -36,3 +39,39 @@ jobs:
       run: msbuild $env:Solution_Name /t:Clean,Rebuild /p:Configuration=$env:Configuration /verbosity:diag
       env:
         Configuration: ${{ matrix.configuration }}
+
+    - name: Read version from Version.xml
+      id: read-version
+      shell: powershell
+      run: |
+        [xml]$versionXml = Get-Content -Path "Version\Version.xml"
+        $version = $versionXml.VersionInfo.LatestVersion
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+        echo "Version: $version"
+
+    - name: Rename MSI files with version
+      shell: powershell
+      run: |
+        $version = "${{ steps.read-version.outputs.VERSION }}"
+        $binPath = "src\bin\Release"
+        
+        # Rename 32-bit MSI
+        if (Test-Path "$binPath\TurtleMine_32bit.msi") {
+          Rename-Item "$binPath\TurtleMine_32bit.msi" "TurtleMine_$version`_32bit.msi"
+          Write-Host "Renamed 32-bit MSI to: TurtleMine_$version`_32bit.msi"
+        }
+        
+        # Rename 64-bit MSI
+        if (Test-Path "$binPath\TurtleMine_64bit.msi") {
+          Rename-Item "$binPath\TurtleMine_64bit.msi" "TurtleMine_$version`_64bit.msi"
+          Write-Host "Renamed 64-bit MSI to: TurtleMine_$version`_64bit.msi"
+        }
+        
+        # List files to verify
+        Get-ChildItem "$binPath\*.msi" | ForEach-Object { Write-Host "Found MSI: $($_.Name)" }
+
+    - name: Upload MSI
+      uses: actions/upload-artifact@v4
+      with:
+        name: TurtleMine-${{ steps.read-version.outputs.VERSION }}
+        path: src/bin/Release/TurtleMine_*bit.msi
